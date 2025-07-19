@@ -32,6 +32,7 @@ export default function Editor({ note, onChange }: EditorProps) {
         onChange={handleContentChange}
         placeholder="Start writing your note..."
         spellCheck="false"
+        autoFocus
         style={{
           fontFamily:
             '"JetBrains Mono", "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
