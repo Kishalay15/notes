@@ -24,7 +24,7 @@ function App() {
         title: "Welcome to Notey!",
         content:
           "# Welcome to Notey!\n\nThis is your first note. Feel free to edit it or create a new one.",
-        docType: "md",
+        docType: "txt",
         lastModified: Date.now(),
       };
       setNotes([newNote]);
@@ -37,7 +37,7 @@ function App() {
       id: crypto.randomUUID(),
       title: "New Note",
       content: "",
-      docType: "md",
+      docType: "txt",
       lastModified: Date.now(),
     };
     setNotes([newNote, ...notes]);
