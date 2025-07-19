@@ -57,13 +57,13 @@ export default function Toolbar({
       {/* Right Actions */}
       <div className="flex items-center space-x-3">
         <select
-          value={activeNote?.docType || "md"}
+          value={activeNote?.docType || "txt"}
           onChange={(e) => onDocTypeChange(e.target.value as "txt" | "md")}
           disabled={!activeNote}
           className="px-3 py-1.5 text-sm font-medium bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          <option value="md">Markdown</option>
-          <option value="txt">Plain Text</option>
+          <option value="txt">Plain Text (.txt)</option>
+          <option value="md">Markdown (.md)</option>
         </select>
 
         <div className="flex items-center space-x-1">
