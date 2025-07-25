@@ -41,64 +41,43 @@ export default function NoteList({
   };
 
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="p-4">
-        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">
-          Notes ({notes.length})
+    <div className="h-full overflow-y-auto bg-gray-200">
+      <div className="p-4 bg-gray-400 border-b-4 border-black">
+        <h2 className="text-sm font-mono font-bold text-black tracking-wider">
+          NOTES ({notes.length})
         </h2>
       </div>
-
-      <div className="px-2">
+      <div className="p-2">
         {sortedNotes.map((note) => (
           <div
             key={note.id}
-            className={`group p-3 mb-1 rounded-lg cursor-pointer transition-all duration-150 ${
-              note.id === activeNoteId
-                ? "bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700"
-                : "hover:bg-slate-50 dark:hover:bg-slate-700/50"
-            }`}
+            className={`group p-3 mb-2 cursor-pointer border-2 border-black transition-all duration-150 ${note.id === activeNoteId
+              ? "bg-black text-white shadow-inner"
+              : "bg-white hover:bg-gray-100"
+              }`}
             onClick={() => onSelectNote(note.id)}
           >
-            <div className="flex items-start justify-between mb-1">
-              <h3
-                className={`font-medium text-sm truncate pr-2 ${
-                  note.id === activeNoteId
-                    ? "text-blue-900 dark:text-blue-100"
-                    : "text-slate-900 dark:text-slate-100 group-hover:text-slate-900 dark:group-hover:text-slate-50"
-                }`}
-              >
-                {note.title || "Untitled Note"}
+            <div className="flex items-start justify-between mb-2">
+              <h3 className="font-mono font-bold text-sm truncate pr-2">
+                {note.title || "UNTITLED NOTE"}
               </h3>
               <span
-                className={`text-xs font-medium px-1.5 py-0.5 rounded flex-shrink-0 ${
-                  note.docType === "md"
-                    ? "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300"
-                    : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400"
-                }`}
+                className={`text-xs font-mono font-bold px-2 py-1 border-2 border-black flex-shrink-0 ${note.docType === "md"
+                  ? "bg-gray-600 text-white"
+                  : "bg-gray-300 text-black"
+                  }`}
               >
                 {note.docType.toUpperCase()}
               </span>
             </div>
-
             {getContentPreview(note.content) && (
-              <p
-                className={`text-xs mb-2 line-clamp-2 ${
-                  note.id === activeNoteId
-                    ? "text-blue-700 dark:text-blue-300"
-                    : "text-slate-500 dark:text-slate-400"
-                }`}
-              >
+              <p className={`text-xs mb-2 font-mono ${note.id === activeNoteId ? "text-gray-300" : "text-gray-600"
+                }`}>
                 {getContentPreview(note.content)}...
               </p>
             )}
-
-            <p
-              className={`text-xs ${
-                note.id === activeNoteId
-                  ? "text-blue-600 dark:text-blue-400"
-                  : "text-slate-400 dark:text-slate-500"
-              }`}
-            >
+            <p className={`text-xs font-mono ${note.id === activeNoteId ? "text-gray-400" : "text-gray-500"
+              }`}>
               {formatDate(note.lastModified)}
             </p>
           </div>
