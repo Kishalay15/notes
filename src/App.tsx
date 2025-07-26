@@ -5,6 +5,7 @@ import Preview from "./components/Preview";
 import Toolbar from "./components/Toolbar";
 import type { Note } from "./types/note";
 import { useLocalStorage } from "./hooks/useLocalStorage";
+import FormattedEditor from "./components/FormattedEditor";
 
 function App() {
   const [notes, setNotes] = useLocalStorage<Note[]>("notes", []);
@@ -69,8 +70,13 @@ function App() {
     setTimeout(() => setSaveStatus("saved"), 1000);
   };
 
-  const onDocTypeChange = (docType: "txt" | "md") => {
+  const onDocTypeChange = (docType: "txt" | "md" | "formatted") => {
     if (!activeNote) return;
+
+    if (docType === "formatted") {
+      setIsPreviewVisible(false);
+    }
+
     onNoteChange({ ...activeNote, docType });
   };
 
@@ -134,15 +140,20 @@ function App() {
           <div className="flex-grow flex min-w-0 flex-col md:flex-row">
             {/* Editor */}
             <div
-              className={`${isPreviewVisible ? "md:flex-1" : "flex-grow"} ${
-                isPreviewVisible ? "hidden md:block" : "block"
-              } bg-white dark:bg-slate-800 md:border-r border-slate-200 dark:border-slate-700`}
+              className={`${isPreviewVisible ? "md:flex-1" : "flex-grow"} ${isPreviewVisible ? "hidden md:block" : "block"
+                } bg-white dark:bg-slate-800 md:border-r border-slate-200 dark:border-slate-700`}
             >
-              <Editor note={activeNote} onChange={onNoteChange} />
+              {/* <Editor note={activeNote} onChange={onNoteChange} /> */}
+              {activeNote.docType === "formatted" ? (
+                <FormattedEditor note={activeNote} onChange={onNoteChange} />
+              ) : (
+                <Editor note={activeNote} onChange={onNoteChange} />
+              )}
+
             </div>
 
             {/* Preview */}
-            {isPreviewVisible && (
+            {isPreviewVisible && activeNote.docType !== "formatted" && (
               <div className="flex-1 bg-slate-50 dark:bg-slate-900 min-w-0">
                 <Preview content={activeNote.content} />
               </div>
