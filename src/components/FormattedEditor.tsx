@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import type { ContentEditableEvent } from 'react-contenteditable';
 import TurndownService from "turndown";
 import { marked } from "marked";
-import ContentEditable from "react-contenteditable";
+import ContentEditable, { type ContentEditableEvent } from "react-contenteditable";
 import type { FormattedEditorProps } from "./FormattedEditor.types";
 
 const turndownService = new TurndownService();
@@ -10,15 +9,21 @@ const turndownService = new TurndownService();
 export default function FormattedEditor({ note, onChange }: FormattedEditorProps) {
     const [html, setHtml] = useState<string>("");
     const htmlRef = useRef("");
+    const editorRef = useRef<HTMLElement>(null!);
+    const isUpdatingFromMarkdown = useRef(false);
 
     useEffect(() => {
         const renderMarkdown = async () => {
+            if (isUpdatingFromMarkdown.current) return;
+
             const newHtml = await marked(note.content || "");
-            setHtml(newHtml);
-            htmlRef.current = newHtml;
+            if (htmlRef.current !== newHtml) {
+                setHtml(newHtml);
+                htmlRef.current = newHtml;
+            }
         };
         renderMarkdown();
-    }, [note.id]);
+    }, [note.id, note.content]); // Added note.content as dependency
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         onChange({
@@ -29,21 +34,27 @@ export default function FormattedEditor({ note, onChange }: FormattedEditorProps
     };
 
     const handleChange = (e: ContentEditableEvent) => {
-        const target = e.target;
 
-        if (target instanceof HTMLElement) {
-            const updatedHtml = target.innerHTML;
-            setHtml(updatedHtml);
-            htmlRef.current = updatedHtml;
+        const updatedHtml = e.target.value;
 
-            const updatedMarkdown = turndownService.turndown(updatedHtml);
+        setHtml(updatedHtml);
+        htmlRef.current = updatedHtml;
 
-            onChange({
-                ...note,
-                content: updatedMarkdown,
-                lastModified: Date.now(),
-            });
-        };
+        // Prevent the useEffect from overriding our changes
+        isUpdatingFromMarkdown.current = true;
+
+        const updatedMarkdown = turndownService.turndown(updatedHtml);
+
+        onChange({
+            ...note,
+            content: updatedMarkdown,
+            lastModified: Date.now(),
+        });
+
+        // Reset the flag after a short delay
+        setTimeout(() => {
+            isUpdatingFromMarkdown.current = false;
+        }, 100);
     };
 
     const applyFormat = (tag: keyof HTMLElementTagNameMap) => {
@@ -64,9 +75,7 @@ export default function FormattedEditor({ note, onChange }: FormattedEditorProps
 
         const range = selection.getRangeAt(0);
         const span = document.createElement("span");
-        span.style.backgroundColor = "#fef3c7";
-        span.style.padding = "2px 4px";
-        span.style.borderRadius = "4px";
+        span.style.backgroundColor = "yellow";
 
         const selectedText = range.extractContents();
         span.appendChild(selectedText);
@@ -210,8 +219,9 @@ export default function FormattedEditor({ note, onChange }: FormattedEditorProps
             <div className="flex-1 px-6 py-6 overflow-y-auto">
                 <ContentEditable
                     html={html}
+                    disabled={false} // Add this required prop
                     onChange={handleChange}
-                    className="w-full min-h-full outline-none text-zinc-800 dark:text-zinc-200 prose prose-zinc dark:prose-invert max-w-none prose-base focus:outline-none
+                    className="whitespace-pre-wrap break-words leading-normal w-full min-h-full outline-none text-zinc-800 dark:text-zinc-200 prose prose-zinc dark:prose-invert max-w-none prose-base focus:outline-none
                         prose-headings:font-semibold prose-headings:text-zinc-900 dark:prose-headings:text-zinc-100
                         prose-p:text-zinc-700 dark:prose-p:text-zinc-300 prose-p:leading-7
                         prose-strong:text-zinc-900 dark:prose-strong:text-zinc-100
