@@ -1,4 +1,5 @@
 import type { ToolbarProps } from "./Toolbar.types";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Toolbar({
   onNewNote,
@@ -65,12 +66,13 @@ export default function Toolbar({
       <div className="flex items-center space-x-2">
         <select
           value={activeNote?.docType || "txt"}
-          onChange={(e) => onDocTypeChange(e.target.value as "txt" | "md")}
+          onChange={(e) => onDocTypeChange(e.target.value as "txt" | "md" | "formatted")}
           disabled={!activeNote}
           className="px-2 sm:px-3 py-1 text-xs font-mono font-bold bg-gray-200 text-black border-2 border-black focus:outline-none focus:bg-white disabled:bg-gray-500 disabled:text-gray-700 disabled:border-gray-600 disabled:cursor-not-allowed"
         >
           <option value="txt">TXT</option>
           <option value="md">MD</option>
+          <option value="formatted">FORM</option>
         </select>
 
         <button
@@ -81,16 +83,19 @@ export default function Toolbar({
         >
           SAVE
         </button>
-        <button
-          onClick={onTogglePreview}
-          className={`inline-flex items-center justify-center px-3 py-1 border-2 border-black font-mono font-bold text-xs transition-colors duration-150 shadow-md ${isPreviewVisible
-            ? "bg-white hover:bg-gray-100 text-black"
-            : "bg-gray-600 hover:bg-gray-500 text-white"
-            }`}
-          title={isPreviewVisible ? "Hide Preview" : "Show Preview"}
-        >
-          {isPreviewVisible ? "HIDE" : "SHOW"}
-        </button>
+        {activeNote?.docType !== "formatted" && (
+          <button
+            onClick={onTogglePreview}
+            className={`inline-flex items-center justify-center px-3 py-1 border-2 border-black font-mono font-bold text-xs transition-colors duration-150 shadow-md ${isPreviewVisible
+              ? "bg-white hover:bg-gray-100 text-black"
+              : "bg-gray-600 hover:bg-gray-500 text-white"
+              }`}
+            title={isPreviewVisible ? "Hide Preview" : "Show Preview"}
+          >
+            {isPreviewVisible ? "HIDE" : "SHOW"}
+          </button>
+        )}
+        <ThemeToggle />
       </div>
     </div>
   );

@@ -41,9 +41,9 @@ export default function NoteList({
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-200">
-      <div className="p-4 bg-gray-400 border-b-4 border-black">
-        <h2 className="text-sm font-mono font-bold text-black tracking-wider">
+    <div className="h-full overflow-y-auto bg-gray-200 dark:bg-slate-900">
+      <div className="p-4 bg-gray-400 dark:bg-slate-800 border-b-4 border-black">
+        <h2 className="text-sm font-mono font-bold text-black dark:text-white tracking-wider">
           NOTES ({notes.length})
         </h2>
       </div>
@@ -53,7 +53,7 @@ export default function NoteList({
             key={note.id}
             className={`group p-3 mb-2 cursor-pointer border-2 border-black transition-all duration-150 ${note.id === activeNoteId
               ? "bg-black text-white shadow-inner"
-              : "bg-white hover:bg-gray-100"
+              : "bg-white dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-black dark:text-white"
               }`}
             onClick={() => onSelectNote(note.id)}
           >
@@ -64,19 +64,23 @@ export default function NoteList({
               <span
                 className={`text-xs font-mono font-bold px-2 py-1 border-2 border-black flex-shrink-0 ${note.docType === "md"
                   ? "bg-gray-600 text-white"
-                  : "bg-gray-300 text-black"
+                  : "bg-gray-300 text-black dark:bg-slate-700 dark:text-white"
                   }`}
               >
                 {note.docType.toUpperCase()}
               </span>
             </div>
             {getContentPreview(note.content) && (
-              <p className={`text-xs mb-2 font-mono ${note.id === activeNoteId ? "text-gray-300" : "text-gray-600"
+              <p className={`text-xs mb-2 font-mono ${note.id === activeNoteId
+                ? "text-gray-300"
+                : "text-gray-600 dark:text-gray-400"
                 }`}>
                 {getContentPreview(note.content)}...
               </p>
             )}
-            <p className={`text-xs font-mono ${note.id === activeNoteId ? "text-gray-400" : "text-gray-500"
+            <p className={`text-xs font-mono ${note.id === activeNoteId
+              ? "text-gray-400"
+              : "text-gray-500 dark:text-gray-400"
               }`}>
               {formatDate(note.lastModified)}
             </p>

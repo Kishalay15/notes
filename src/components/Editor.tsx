@@ -18,16 +18,16 @@ export default function Editor({ note, onChange }: EditorProps) {
   };
 
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div className="h-full flex flex-col bg-white dark:bg-slate-800">
       <input
         type="text"
-        className="p-3 sm:p-4 bg-gray-100 text-black focus:outline-none text-lg sm:text-xl font-mono font-bold placeholder:text-gray-600 border-b-4 border-black"
+        className="p-3 sm:p-4 bg-gray-100 dark:bg-slate-700 dark:text-white text-black focus:outline-none text-lg sm:text-xl font-mono font-bold placeholder:text-gray-600 dark:placeholder:text-gray-400 border-b-4 border-black"
         value={note.title}
         onChange={handleTitleChange}
         placeholder="NOTE TITLE..."
       />
       <textarea
-        className="flex-grow p-3 sm:p-6 bg-white text-black focus:outline-none resize-none font-mono text-sm leading-relaxed placeholder:text-gray-500"
+        className="flex-grow p-3 sm:p-6 bg-white dark:bg-slate-900 text-black dark:text-white focus:outline-none resize-none font-mono text-sm leading-relaxed placeholder:text-gray-500 dark:placeholder:text-gray-400"
         value={note.content}
         onChange={handleContentChange}
         placeholder="START TYPING YOUR NOTE..."
