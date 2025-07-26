@@ -44,7 +44,6 @@ function App() {
     };
     setNotes([newNote, ...notes]);
     setActiveNoteId(newNote.id);
-    // Close sidebar on mobile after creating note
     setIsSidebarVisible(false);
   };
 
@@ -57,7 +56,6 @@ function App() {
 
   const handleSelectNote = (id: string) => {
     setActiveNoteId(id);
-    // Close sidebar on mobile after selecting note
     setIsSidebarVisible(false);
   };
 
@@ -94,7 +92,7 @@ function App() {
   const activeNote = notes.find((note) => note.id === activeNoteId);
 
   return (
-    <main className="bg-slate-50 dark:bg-slate-900 h-screen flex flex-col font-inter antialiased relative">
+    <main className="bg-zinc-50 dark:bg-zinc-950 min-h-screen flex flex-col antialiased">
       <Toolbar
         onNewNote={handleNewNote}
         onDeleteNote={handleDeleteNote}
@@ -107,81 +105,89 @@ function App() {
         saveStatus={saveStatus}
       />
 
-      <div className="flex-grow flex overflow-hidden relative">
-        {/* Mobile Sidebar Overlay */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Mobile Backdrop */}
         {isSidebarVisible && (
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-200"
             onClick={() => setIsSidebarVisible(false)}
           />
         )}
 
         {/* Sidebar */}
-        <div
+        <aside
           className={`
-          ${isSidebarVisible ? "translate-x-0" : "-translate-x-full"}
-          md:translate-x-0 md:relative
-          fixed left-0 top-0 bottom-0 z-30
-          w-72 bg-white dark:bg-slate-800
-          border-r border-slate-200 dark:border-slate-700
-          flex-shrink-0 transition-transform duration-300 ease-in-out
-          pt-16 md:pt-0
-        `}
+            ${isSidebarVisible ? "translate-x-0" : "-translate-x-full"}
+            lg:translate-x-0 lg:relative
+            fixed left-0 top-0 bottom-0 z-50
+            w-80 bg-white dark:bg-zinc-900
+            shadow-2xl lg:shadow-none
+            border-r border-zinc-200/80 dark:border-zinc-800/80
+            transition-all duration-300 ease-out
+            pt-16 lg:pt-0
+          `}
         >
           <NoteList
             notes={notes}
             onSelectNote={handleSelectNote}
             activeNoteId={activeNoteId}
           />
-        </div>
+        </aside>
 
-        {/* Main Content */}
+        {/* Main Content Area */}
         {activeNote ? (
-          <div className="flex-grow flex min-w-0 flex-col md:flex-row">
-            {/* Editor */}
+          <div className="flex-1 flex flex-col lg:flex-row min-w-0 bg-white dark:bg-zinc-900">
+            {/* Editor Panel */}
             <div
-              className={`${isPreviewVisible ? "md:flex-1" : "flex-grow"} ${isPreviewVisible ? "hidden md:block" : "block"
-                } bg-white dark:bg-slate-800 md:border-r border-slate-200 dark:border-slate-700`}
+              className={`
+                ${isPreviewVisible && activeNote.docType !== "formatted"
+                  ? "flex-1"
+                  : "flex-1"
+                }
+                ${isPreviewVisible && activeNote.docType !== "formatted"
+                  ? "hidden lg:flex"
+                  : "flex"
+                }
+                flex-col min-h-0
+              `}
             >
-              {/* <Editor note={activeNote} onChange={onNoteChange} /> */}
               {activeNote.docType === "formatted" ? (
                 <FormattedEditor note={activeNote} onChange={onNoteChange} />
               ) : (
                 <Editor note={activeNote} onChange={onNoteChange} />
               )}
-
             </div>
 
-            {/* Preview */}
+            {/* Preview Panel */}
             {isPreviewVisible && activeNote.docType !== "formatted" && (
-              <div className="flex-1 bg-slate-50 dark:bg-slate-900 min-w-0">
+              <div className="flex-1 bg-zinc-50 dark:bg-zinc-950 border-l border-zinc-200/60 dark:border-zinc-800/60 min-w-0">
                 <Preview content={activeNote.content} />
               </div>
             )}
           </div>
         ) : (
-          <div className="flex-grow flex items-center justify-center bg-white dark:bg-slate-800">
-            <div className="text-center px-4">
-              <div className="w-16 h-16 mx-auto mb-4 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center bg-white dark:bg-zinc-900">
+            <div className="text-center max-w-sm mx-auto px-6">
+              <div className="w-20 h-20 mx-auto mb-6 bg-zinc-100 dark:bg-zinc-800 rounded-2xl flex items-center justify-center">
                 <svg
-                  className="w-8 h-8 text-slate-400 dark:text-slate-500"
+                  className="w-8 h-8 text-zinc-400 dark:text-zinc-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  strokeWidth={1.5}
                 >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0-1.125.504-1.125 1.125V11.25a9 9 0 0 0-9-9Z"
                   />
                 </svg>
               </div>
-              <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
-                Select a note to start editing
-              </p>
-              <p className="text-slate-400 dark:text-slate-500 text-xs mt-1">
-                or create a new one
+              <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+                No note selected
+              </h3>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                Choose an existing note from the sidebar or create a new one to get started
               </p>
             </div>
           </div>
