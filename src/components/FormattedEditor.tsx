@@ -9,7 +9,6 @@ const turndownService = new TurndownService();
 export default function FormattedEditor({ note, onChange }: FormattedEditorProps) {
     const [html, setHtml] = useState<string>("");
     const htmlRef = useRef("");
-    const editorRef = useRef<HTMLElement>(null!);
     const isUpdatingFromMarkdown = useRef(false);
 
     useEffect(() => {
